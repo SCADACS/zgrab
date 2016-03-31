@@ -193,7 +193,11 @@ func makeHTTPGrabber(config *Config, grabData GrabData) func(string) error {
 			Jar:       nil, // Don't send or receive cookies (otherwise use CookieJar)
 			Transport: transport,
 		}
-		if resp, err := client.Get("http://" + addr); err != nil {
+		protocol := "http"
+		if config.TLS {
+			protocol += "s"
+		}
+		if resp, err := client.Get(protocol + "://" + addr); err != nil {
 			config.ErrorLog.Errorf("Could not connect to remote host %s: %s", addr, err.Error())
 			return err
 		} else {
